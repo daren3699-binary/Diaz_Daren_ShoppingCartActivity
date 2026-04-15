@@ -80,23 +80,20 @@
                     continue;
                 }
 
-
                 Console.WriteLine($"\nYou selected: {selectedproduct.Name} x {quantity}");
                 Add_or_UpdateCart(cart, selectedproduct, quantity);
-                DisplayCart(cart);
-
                 selectedproduct.DeductStock(quantity);
+                DisplayCart(cart);
 
                 Console.Write("Do you want to continue shopping? (y/n) : ");
                 string choice = Console.ReadLine().ToLower();
 
                 if (choice != "y" && choice != "yes")
                 {
-                    Console.WriteLine("Thank you for shopping...");
+                    Console.WriteLine("Thank you for shopping!");
                     break;
                 }
                 else { Console.WriteLine(); }
-
             }
 
             DisplayReceipt(cart, products);
@@ -206,31 +203,31 @@
                 return;
             }
 
-            double GrandTotal = 0;
+            double grandTotal = 0;
 
             foreach (CartItem item in cart)
             {
                 Console.WriteLine($"{item.Product.Name, -20} x{item.Quantity, -3} = PHP {item.SubTotal,8:F2}");
-                GrandTotal += item.SubTotal;
+                grandTotal += item.SubTotal;
             }
 
-            Console.WriteLine("----------------------");
-            Console.WriteLine($"Grand Total: PHP {GrandTotal}");
+            Console.WriteLine("================================================");
+            Console.WriteLine($"Grand Total: PHP {grandTotal:F2}");
 
             double discount = 0;
 
-            if (GrandTotal >= 5000)
+            if (grandTotal >= 5000)
             {
-                discount = GrandTotal * 0.10;
-                Console.WriteLine($"INFO: Discount (10%): PHP {discount} off discount applied");
+                discount = grandTotal * 0.10;
+                Console.WriteLine($"INFO: 10% Discount Applied: PHP {discount:F2}");
             }
             else
             {
-                Console.WriteLine("INFO: Discount : PHP 0 . No discount applied.");
+                Console.WriteLine("INFO: 0% Discount Applied : PHP 0");
             }
 
-            double finalTotal = GrandTotal - discount;
-            Console.WriteLine($"PHP {GrandTotal} - PHP {discount} = Final Total : PHP {finalTotal}");
+            double finalTotal = grandTotal - discount;
+            Console.WriteLine($"PHP {grandTotal:F2} - PHP {discount:F2} = Final Total : PHP {finalTotal:F2}");
 
             Console.WriteLine("\n================================================");
             Console.WriteLine("            REMAINING STOCK (UPDATED)");
@@ -240,6 +237,7 @@
                 Console.WriteLine($"Product : {product.Name,-20} | Remaining Stock : {product.RemainingStock,-3}");
             }
             Console.WriteLine("================================================");
+            Console.WriteLine("Thank you for shopping!");
 
         }
 
