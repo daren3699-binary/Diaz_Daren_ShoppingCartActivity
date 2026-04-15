@@ -31,25 +31,48 @@
                              Name = "Whiteboard Marker",
                              Price = 12.00,
                              RemainingStock = 21,},
+
+                new Product {Id = 6,
+                             Name = "Bag",
+                             Price = 250.00,
+                             RemainingStock = 15,},
+
+
+                new Product {Id = 7,
+                             Name = "White Board",
+                             Price = 300.00,
+                             RemainingStock = 25,},
+
+
+                new Product {Id = 8,
+                             Name = "Aquaflask Tumbler",
+                             Price = 500.00,
+                             RemainingStock = 30,},
             };
 
             List<CartItem> cart = new List<CartItem>();
 
             while (true)
             {
-                Console.WriteLine("\n=================================");
-                Console.WriteLine("            STORE MENU");
-                Console.WriteLine("=================================");
+                Console.WriteLine("\n================================================");
+                Console.WriteLine("                 STORE MENU");
+                Console.WriteLine("================================================");
                 foreach (Product product in products)
                 {
                     product.DisplayProduct();
                 }
-                Console.WriteLine("=================================");
+                Console.WriteLine("================================================");
 
                 int product_index = ValidateProductNumber(products);
                 int quantity = ValidateQuantity();
 
                 Product selectedproduct = products[product_index];
+
+                if (selectedproduct.RemainingStock == 0)
+                {
+                    Console.WriteLine("INFO: Out of Stock.");
+                    continue;
+                }
 
                 if (!selectedproduct.HasEnoughStock(quantity))
                 {
@@ -57,11 +80,6 @@
                     continue;
                 }
 
-                if (selectedproduct.RemainingStock == 0)
-                {
-                    Console.WriteLine("INFO: Out of Stock.");
-                    continue;
-                }
 
                 Console.WriteLine($"\nYou selected: {selectedproduct.Name} x {quantity}");
                 Add_or_UpdateCart(cart, selectedproduct, quantity);
@@ -72,7 +90,7 @@
                 Console.Write("Do you want to continue shopping? (y/n) : ");
                 string choice = Console.ReadLine().ToLower();
 
-                if (choice != "y")
+                if (choice != "y" && choice != "yes")
                 {
                     Console.WriteLine("Thank you for shopping...");
                     break;
@@ -154,9 +172,9 @@
 
         static void DisplayCart(List<CartItem> cart)
         {
-            Console.WriteLine("\n=================================");
-            Console.WriteLine("            CURRENT CART");
-            Console.WriteLine("=================================");
+            Console.WriteLine("\n================================================");
+            Console.WriteLine("                 CURRENT CART");
+            Console.WriteLine("================================================");
 
             if (cart.Count == 0)
             {
@@ -168,19 +186,19 @@
 
             foreach (CartItem item in cart)
             {
-                Console.WriteLine($"{item.Product.Name} | Quantity: {item.Quantity} | Subtotal: PHP {item.SubTotal}");
+                Console.WriteLine($"{item.Product.Name,-20} | Quantity: {item.Quantity,-3} | Subtotal: (PHP {item.Product.Price:F2} x {item.Quantity}) = PHP {item.SubTotal:F2}");
                 total += item.SubTotal;
             }
 
             Console.WriteLine($"Current Total: PHP {total:F2}");
-            Console.WriteLine("=========================");
+            Console.WriteLine("================================================");
         }
 
         static void DisplayReceipt(List<CartItem> cart, Product[] products)
         {
-            Console.WriteLine("\n=================================");
-            Console.WriteLine("            RECEIPT");
-            Console.WriteLine("=================================");
+            Console.WriteLine("\n================================================");
+            Console.WriteLine("                  RECEIPT");
+            Console.WriteLine("================================================");
 
             if (cart.Count == 0)
             {
@@ -196,7 +214,7 @@
                 GrandTotal += item.SubTotal;
             }
 
-            Console.WriteLine("-----------------");
+            Console.WriteLine("----------------------");
             Console.WriteLine($"Grand Total: PHP {GrandTotal}");
 
             double discount = 0;
@@ -212,16 +230,16 @@
             }
 
             double finalTotal = GrandTotal - discount;
-            Console.WriteLine($" PHP {GrandTotal} - PHP {discount} = Final Total : PHP {finalTotal}");
+            Console.WriteLine($"PHP {GrandTotal} - PHP {discount} = Final Total : PHP {finalTotal}");
 
-            Console.WriteLine("\n=================================");
+            Console.WriteLine("\n================================================");
             Console.WriteLine("            REMAINING STOCK (UPDATED)");
-            Console.WriteLine("=================================");
+            Console.WriteLine("================================================");
             foreach (Product product in products)
             {
-                Console.WriteLine($"Product : {product.Name} | Remaining Stock : {product.RemainingStock}");
+                Console.WriteLine($"Product : {product.Name,-20} | Remaining Stock : {product.RemainingStock,-3}");
             }
-            Console.WriteLine("=========================");
+            Console.WriteLine("================================================");
 
         }
 

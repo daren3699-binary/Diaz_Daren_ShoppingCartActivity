@@ -13,7 +13,7 @@ namespace v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY
 
         public void DisplayProduct()
         {
-            Console.WriteLine($"{Id}. {Name} - PHP{Price} (Stock: {RemainingStock}) ");
+            Console.WriteLine($"{Id}. {Name,-20} - PHP {Price,-6:F2} (Stock: {RemainingStock}) ");
         }
 
         public double GetItemTotal(int quantity)
