@@ -62,7 +62,8 @@
                 }
 
                 Console.WriteLine($"\nYou selected: {selectedproduct.Name} x {quantity}");
-                Add_or_UpdateCart(cart,selectedproduct, quantity);
+                Add_or_UpdateCart(cart, selectedproduct, quantity);
+                DisplayCart(cart);
 
                 selectedproduct.DeductStock(quantity);
 
@@ -71,11 +72,16 @@
 
                 if (choice != "y")
                 {
-                    Console.WriteLine("Thank you for shopping");
+                    Console.WriteLine("Thank you for shopping...");
                     break;
                 }
+                else { Console.WriteLine(); }
 
             }
+
+            DisplayReceipt(cart, products);
+
+
 
 
 
@@ -137,7 +143,7 @@
                     item.Quantity += quantity;
                     item.SubTotal += product.GetItemTotal(quantity);
 
-                    Console.WriteLine($"Updated {product.Name} quantity into {quantity} in the cart");
+                    Console.WriteLine($"Updated {product.Name} quantity. New quantity: {item.Quantity} ");
                     return;
                 }
             }
@@ -148,6 +154,73 @@
             new_item.SubTotal = product.GetItemTotal(quantity);
             cart.Add(new_item);
             Console.WriteLine($"Added {product.Name} x {quantity} to the cart");
+        }
+
+        static void DisplayCart(List<CartItem> cart)
+        {
+            Console.WriteLine("\n===== Current Cart ======");
+
+            if (cart.Count == 0)
+            {
+                Console.WriteLine("Your cart is empty.");
+                return;
+            }
+
+            double total = 0;
+
+            foreach (CartItem item in cart)
+            {
+                Console.WriteLine($"{item.Product.Name} | Quantity: {item.Quantity} | Subtotal: PHP {item.SubTotal}");
+                total += item.SubTotal;
+            }
+
+            Console.WriteLine($"Total so far: PHP {total}");
+            Console.WriteLine("=========================");
+        }
+
+        static void DisplayReceipt(List<CartItem> cart, Product[] products)
+        {
+            Console.WriteLine("\n===== Receipt =====");
+
+            if (cart.Count == 0)
+            {
+                Console.WriteLine("No items purchased.");
+                return;
+            }
+
+            double GrandTotal = 0;
+
+            foreach (CartItem item in cart)
+            {
+                Console.WriteLine($"{item.Product.Name} x {item.Quantity} = PHP {item.SubTotal}");
+                GrandTotal += item.SubTotal;
+            }
+
+            Console.WriteLine("-----------------");
+            Console.WriteLine($"Grand Total: PHP {GrandTotal}");
+
+            double discount = 0;
+
+            if (GrandTotal >= 5000)
+            {
+                discount = GrandTotal * 0.10;
+                Console.WriteLine($"Discount (10%): PHP {discount}");
+            }
+            else
+            {
+                Console.WriteLine("Discount : PHP 0 . No discount applied.");
+            }
+
+            double finalTotal = GrandTotal - discount;
+            Console.WriteLine($" PHP {GrandTotal} - PHP {discount} = Final Total : PHP {finalTotal}");
+
+            Console.WriteLine("\n===== Updated Remaining Stock ======");
+            foreach (Product product in products)
+            {
+                Console.WriteLine($"Product : {product.Name} | Remaining Stock : {product.RemainingStock}");
+            }
+            Console.WriteLine("=========================");
+
         }
 
 
