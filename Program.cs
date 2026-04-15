@@ -37,12 +37,14 @@
 
             while (true)
             {
-                Console.WriteLine("========STORE MENU========");
+                Console.WriteLine("\n=================================");
+                Console.WriteLine("            STORE MENU");
+                Console.WriteLine("=================================");
                 foreach (Product product in products)
                 {
                     product.DisplayProduct();
                 }
-                Console.WriteLine("==========================");
+                Console.WriteLine("=================================");
 
                 int product_index = ValidateProductNumber(products);
                 int quantity = ValidateQuantity();
@@ -51,13 +53,13 @@
 
                 if (!selectedproduct.HasEnoughStock(quantity))
                 {
-                    Console.WriteLine("Not enough stock.");
+                    Console.WriteLine("ERROR: Not enough stock.");
                     continue;
                 }
 
                 if (selectedproduct.RemainingStock == 0)
                 {
-                    Console.WriteLine("Out of Stock.");
+                    Console.WriteLine("INFO: Out of Stock.");
                     continue;
                 }
 
@@ -80,13 +82,7 @@
             }
 
             DisplayReceipt(cart, products);
-
-
-
-
-
         }
-
 
         static int ValidateProductNumber(Product[] products)
         {
@@ -97,13 +93,13 @@
 
                 if (!int.TryParse(input, out int productnumber))
                 {
-                    Console.WriteLine("Invalid input. Please enter a valid product number.");
+                    Console.WriteLine("ERROR: Invalid input. Please enter a valid product number.");
                     continue;
                 }
 
                 if (productnumber < 1 || productnumber > products.Length)
                 {
-                    Console.WriteLine("Invalid product number.");
+                    Console.WriteLine("ERROR: Invalid product number.");
                     continue;
                 }
 
@@ -120,13 +116,13 @@
 
                 if (!int.TryParse(input, out int quantity))
                 {
-                    Console.WriteLine("Invalid input. Please enter a valid quantity.");
+                    Console.WriteLine("ERROR: Invalid input. Please enter a valid quantity.");
                     continue;
                 }
 
                 if (quantity <= 0)
                 {
-                    Console.WriteLine("Invalid. Quantity must be greater than zero.");
+                    Console.WriteLine("ERROR: Invalid. Quantity must be greater than zero.");
                     continue;
                 }
 
@@ -143,7 +139,7 @@
                     item.Quantity += quantity;
                     item.SubTotal += product.GetItemTotal(quantity);
 
-                    Console.WriteLine($"Updated {product.Name} quantity. New quantity: {item.Quantity} ");
+                    Console.WriteLine($"UPDATE: Updated {product.Name} quantity. New quantity: {item.Quantity} ");
                     return;
                 }
             }
@@ -153,16 +149,18 @@
             new_item.Quantity = quantity;
             new_item.SubTotal = product.GetItemTotal(quantity);
             cart.Add(new_item);
-            Console.WriteLine($"Added {product.Name} x {quantity} to the cart");
+            Console.WriteLine($"INFO: Added {product.Name} x {quantity} to the cart");
         }
 
         static void DisplayCart(List<CartItem> cart)
         {
-            Console.WriteLine("\n===== Current Cart ======");
+            Console.WriteLine("\n=================================");
+            Console.WriteLine("            CURRENT CART");
+            Console.WriteLine("=================================");
 
             if (cart.Count == 0)
             {
-                Console.WriteLine("Your cart is empty.");
+                Console.WriteLine("INFO: Your cart is empty.");
                 return;
             }
 
@@ -174,17 +172,19 @@
                 total += item.SubTotal;
             }
 
-            Console.WriteLine($"Total so far: PHP {total}");
+            Console.WriteLine($"Current Total: PHP {total:F2}");
             Console.WriteLine("=========================");
         }
 
         static void DisplayReceipt(List<CartItem> cart, Product[] products)
         {
-            Console.WriteLine("\n===== Receipt =====");
+            Console.WriteLine("\n=================================");
+            Console.WriteLine("            RECEIPT");
+            Console.WriteLine("=================================");
 
             if (cart.Count == 0)
             {
-                Console.WriteLine("No items purchased.");
+                Console.WriteLine("INFO: No items purchased.");
                 return;
             }
 
@@ -192,7 +192,7 @@
 
             foreach (CartItem item in cart)
             {
-                Console.WriteLine($"{item.Product.Name} x {item.Quantity} = PHP {item.SubTotal}");
+                Console.WriteLine($"{item.Product.Name, -20} x{item.Quantity, -3} = PHP {item.SubTotal,8:F2}");
                 GrandTotal += item.SubTotal;
             }
 
@@ -204,17 +204,19 @@
             if (GrandTotal >= 5000)
             {
                 discount = GrandTotal * 0.10;
-                Console.WriteLine($"Discount (10%): PHP {discount}");
+                Console.WriteLine($"INFO: Discount (10%): PHP {discount} off discount applied");
             }
             else
             {
-                Console.WriteLine("Discount : PHP 0 . No discount applied.");
+                Console.WriteLine("INFO: Discount : PHP 0 . No discount applied.");
             }
 
             double finalTotal = GrandTotal - discount;
             Console.WriteLine($" PHP {GrandTotal} - PHP {discount} = Final Total : PHP {finalTotal}");
 
-            Console.WriteLine("\n===== Updated Remaining Stock ======");
+            Console.WriteLine("\n=================================");
+            Console.WriteLine("            REMAINING STOCK (UPDATED)");
+            Console.WriteLine("=================================");
             foreach (Product product in products)
             {
                 Console.WriteLine($"Product : {product.Name} | Remaining Stock : {product.RemainingStock}");
