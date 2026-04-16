@@ -1,4 +1,3 @@
-Initial Project Setup
 # Shopping Cart System (C#)
 This is my quiz requirement (quiz 2 and 3) for Computer Programming 2, before Midterms.
 This project is a console-based shopping cart system with stock mananagement.
@@ -27,7 +26,7 @@ Let me just copy and paste it here.
 - "how to connect my code in visual studio to my repository in github (i already have the Read.md but how do i add program.cs?)"
 - "What is TryParse in c#?"
 - "How can i add the "cart" logic?"
-- (Attached File = Program.cs) "Without destroying the writing/structure of my orginal code, what can i improve to make it cleaner and much more efficient?"
+- (Attached File = Program.cs) "Without destroying the writing/structure of my original code, what can i improve to make it cleaner and much more efficient?"
 
 What i've changed or improved after using AI?
 - My workflow/time management improve.
