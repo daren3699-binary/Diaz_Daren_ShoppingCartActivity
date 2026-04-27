@@ -26,15 +26,9 @@ namespace v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY
             return RemainingStock >= quantity;
         }
 
-        public int DeductStock(int quantity)
+        public void DeductStock(int quantity)
         {
-            return RemainingStock -= quantity;
+            RemainingStock -= quantity;
         }
-
-
-
-
-
-
     }
 }

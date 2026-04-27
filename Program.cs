@@ -50,7 +50,8 @@
                              RemainingStock = 30,},
             };
 
-            List<CartItem> cart = new List<CartItem>();
+            CartItem[] cart = new CartItem[10];
+            int cartCount = 0;
 
             while (true)
             {
@@ -81,22 +82,20 @@
                 }
 
                 Console.WriteLine($"\nYou selected: {selectedproduct.Name} x {quantity}");
-                Add_or_UpdateCart(cart, selectedproduct, quantity);
+                Add_or_UpdateCart(cart, ref cartCount, selectedproduct, quantity);
                 selectedproduct.DeductStock(quantity);
-                DisplayCart(cart);
+                DisplayCart(cart, cartCount);
 
-                Console.Write("Do you want to continue shopping? (y/n) : ");
-                string choice = Console.ReadLine().ToLower();
-
-                if (choice != "y" && choice != "yes")
+                string choice = ValidateContinueShopping("\nDo you want to continue shopping? (Y/N): ");
+                if (choice == "N")
                 {
-                    Console.WriteLine("Thank you for shopping!");
+                    Console.WriteLine("INFO: Proceeding to checkout...");
                     break;
                 }
-                else { Console.WriteLine(); }
+
             }
 
-            DisplayReceipt(cart, products);
+            DisplayReceipt(cart, cartCount, products);
         }
 
         static int ValidateProductNumber(Product[] products)
@@ -145,35 +144,45 @@
             }
         }
 
-        static void Add_or_UpdateCart(List<CartItem> cart, Product product, int quantity)
+        static void Add_or_UpdateCart(CartItem[] cart, ref int cartCount, Product product, int quantity)
         {
-            foreach (CartItem item in cart)
+            for (int i = 0; i < cartCount; i++)
             {
-                if (item.Product.Id == product.Id)
+                if (cart[i].Product.Id == product.Id)
                 {
-                    item.Quantity += quantity;
-                    item.SubTotal += product.GetItemTotal(quantity);
+                    cart[i].Quantity += quantity;
+                    cart[i].SubTotal += product.GetItemTotal(quantity);
 
-                    Console.WriteLine($"UPDATE: Updated {product.Name} quantity. New quantity: {item.Quantity} ");
+                    Console.WriteLine($"UPDATE: Updated {product.Name} quantity. New quantity: {cart[i].Quantity} ");
                     return;
                 }
             }
 
-            CartItem new_item = new CartItem();
-            new_item.Product = product;
-            new_item.Quantity = quantity;
-            new_item.SubTotal = product.GetItemTotal(quantity);
-            cart.Add(new_item);
-            Console.WriteLine($"INFO: Added {product.Name} x {quantity} to the cart");
+            if (cartCount == cart.Length)
+            {
+                Console.WriteLine("ERROR: Cart is full.");
+                return;
+            }
+
+            cart[cartCount] = new CartItem()
+            {
+                Product = product,
+                Quantity = quantity,
+                SubTotal = product.GetItemTotal(quantity)
+            };
+
+            cartCount++;
+
+            Console.WriteLine($"INFO: Added {product.Name} x {quantity} to cart.");
         }
 
-        static void DisplayCart(List<CartItem> cart)
+        static void DisplayCart(CartItem[] cart, int cartCount)
         {
             Console.WriteLine("\n================================================");
             Console.WriteLine("                 CURRENT CART");
             Console.WriteLine("================================================");
 
-            if (cart.Count == 0)
+            if (cartCount == 0)
             {
                 Console.WriteLine("INFO: Your cart is empty.");
                 return;
@@ -181,8 +190,9 @@
 
             double total = 0;
 
-            foreach (CartItem item in cart)
+            for (int i = 0; i < cartCount; i++)
             {
+                CartItem item = cart[i];
                 Console.WriteLine($"{item.Product.Name,-20} | Quantity: {item.Quantity,-3} | Subtotal: (PHP {item.Product.Price:F2} x {item.Quantity}) = PHP {item.SubTotal:F2}");
                 total += item.SubTotal;
             }
@@ -191,13 +201,13 @@
             Console.WriteLine("================================================");
         }
 
-        static void DisplayReceipt(List<CartItem> cart, Product[] products)
+        static void DisplayReceipt(CartItem[] cart, int cartCount, Product[] products)
         {
             Console.WriteLine("\n================================================");
             Console.WriteLine("                  RECEIPT");
             Console.WriteLine("================================================");
 
-            if (cart.Count == 0)
+            if (cartCount == 0)
             {
                 Console.WriteLine("INFO: No items purchased.");
                 return;
@@ -205,9 +215,10 @@
 
             double grandTotal = 0;
 
-            foreach (CartItem item in cart)
+            for (int i = 0; i < cartCount; i++)
             {
-                Console.WriteLine($"{item.Product.Name, -20} x{item.Quantity, -3} = PHP {item.SubTotal,8:F2}");
+                CartItem item = cart[i];
+                Console.WriteLine($"{item.Product.Name,-20} x {item.Quantity,-3} = PHP {item.SubTotal,8:F2}");
                 grandTotal += item.SubTotal;
             }
 
@@ -241,7 +252,26 @@
 
         }
 
+        static string ValidateContinueShopping(string message)
+        {
+            while (true)
+            {
+                Console.Write(message);
+                string choice = Console.ReadLine().Trim().ToUpper();
 
+                if (choice == "Y" || choice == "YES")
+                {
+                    return "Y";
+                }
+                else if (choice == "N" || choice == "NO")
+                {
+                    return "N";
+                }
+                else
+                {
+                    Console.WriteLine("ERROR: Invalid input. Please enter 'Y' or 'N'.");
+                }
+            }
+        }
     }
-
 }
