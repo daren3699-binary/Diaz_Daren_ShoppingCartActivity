@@ -50,7 +50,7 @@
                              RemainingStock = 30,},
             };
 
-            CartItem[] cart = new CartItem[10];
+            CartItem[] cart = new CartItem[5];
             int cartCount = 0;
 
             while (true)
@@ -63,6 +63,27 @@
                     product.DisplayProduct();
                 }
                 Console.WriteLine("================================================");
+                Console.WriteLine($"Available cart slots: {cart.Length - cartCount}");
+
+                if (cartCount == cart.Length)
+                {
+                    Console.WriteLine("INFO: Cart is full.");
+
+                    int fullChoice = CartMenu();
+
+                    if (fullChoice == 6)
+                    {
+                        DisplayReceipt(cart, cartCount, products);
+                        return;
+                    }
+
+                    if (fullChoice == 1)
+                    {
+                        DisplayCart(cart, cartCount);
+                    }
+
+                    continue;
+                }
 
                 int product_index = ValidateProductNumber(products);
                 int quantity = ValidateQuantity();
@@ -86,16 +107,58 @@
                 selectedproduct.DeductStock(quantity);
                 DisplayCart(cart, cartCount);
 
-                string choice = ValidateContinueShopping("\nDo you want to continue shopping? (Y/N): ");
-                if (choice == "N")
+                bool checkoutNow = false;
+
+                while (true)
                 {
-                    Console.WriteLine("INFO: Proceeding to checkout...");
+                    int cartMenuChoice = CartMenu();
+
+                    if (cartMenuChoice == 1)
+                    {
+                        DisplayCart(cart, cartCount);
+                    }
+                    else if (cartMenuChoice == 2)
+                    {
+                        UpdateQuantity(cart, cartCount);
+                    }
+                    else if (cartMenuChoice == 3)
+                    {
+                        RemoveItem(cart, ref cartCount);
+                    }
+                    else if (cartMenuChoice == 4)
+                    {
+                        string confirm = PromptValidator("Are you sure you want to clear the cart? (Y/N): ");
+                        if (confirm == "Y")
+                        {
+                            ClearCart(ref cartCount);
+                        }
+                    }
+                    else if (cartMenuChoice == 5)
+                    {
+                        break;
+                    }
+                    else if (cartMenuChoice == 6)
+                    {
+                        string choice = PromptValidator("Are you sure you want to checkout? (Y/N): ");
+
+                        if (choice == "Y")
+                        {
+                            checkoutNow = true;
+                            break;
+                        }
+                    }
+
+                }
+
+                if (checkoutNow)
+                {
+                    DisplayReceipt(cart, cartCount, products);
                     break;
                 }
 
             }
 
-            DisplayReceipt(cart, cartCount, products);
+
         }
 
         static int ValidateProductNumber(Product[] products)
@@ -193,7 +256,7 @@
             for (int i = 0; i < cartCount; i++)
             {
                 CartItem item = cart[i];
-                Console.WriteLine($"{item.Product.Name,-20} | Quantity: {item.Quantity,-3} | Subtotal: (PHP {item.Product.Price:F2} x {item.Quantity}) = PHP {item.SubTotal:F2}");
+                Console.WriteLine($"{i + 1}. {item.Product.Name,-20} | Quantity: {item.Quantity,-3} | Subtotal: (PHP {item.Product.Price:F2} x {item.Quantity}) = PHP {item.SubTotal:F2}");
                 total += item.SubTotal;
             }
 
@@ -251,8 +314,8 @@
             Console.WriteLine("Thank you for shopping!");
 
         }
-
-        static string ValidateContinueShopping(string message)
+        //Part 2 Codes / Methods
+        static string PromptValidator(string message) //a method for Y/N input validation
         {
             while (true)
             {
@@ -272,6 +335,118 @@
                     Console.WriteLine("ERROR: Invalid input. Please enter 'Y' or 'N'.");
                 }
             }
+        }
+
+        static int CartMenu()
+        {
+            while (true)
+            {
+                Console.WriteLine("\n============== CART MENU ==============");
+                Console.WriteLine("1. View Cart");
+                Console.WriteLine("2. Update Item Quantity");
+                Console.WriteLine("3. Remove Item");
+                Console.WriteLine("4. Clear Cart");
+                Console.WriteLine("5. Continue Shopping");
+                Console.WriteLine("6. Checkout");
+                Console.Write("Enter choice (1-6): ");
+
+                string input = Console.ReadLine();
+
+                if (int.TryParse(input, out int choice))
+                {
+                    if (choice >= 1 && choice <= 6)
+                    {
+                        return choice;
+                    }
+                }
+                Console.WriteLine("ERROR: Invalid choice. Please enter a number between 1 and 6.");
+            }
+        }
+
+        static void ClearCart(ref int cartCount)
+        {
+            cartCount = 0;
+            Console.WriteLine("INFO: Cart has been cleared.");
+        }
+
+        static void RemoveItem(CartItem[] cart, ref int cartCount)
+        {
+            if (cartCount == 0)
+            {
+                Console.WriteLine("INFO: Cart is empty. No items to remove.");
+                return;
+            }
+
+            DisplayCart(cart, cartCount);
+
+            Console.Write($"Enter item number to remove (1 to {cartCount}): ");
+            string input = Console.ReadLine();
+
+            if (!int.TryParse(input, out int removeIndex))
+            {
+                Console.WriteLine("ERROR: Invalid number.");
+                return;
+            }
+
+            removeIndex--;
+
+            if (removeIndex < 0 || removeIndex >= cartCount)
+            {
+                Console.WriteLine("ERROR: Item does not exist.");
+                return;
+            }
+            Console.WriteLine($"INFO: Removed {cart[removeIndex].Product.Name}");
+
+            for (int i = removeIndex; i < cartCount - 1; i++)
+            {
+                cart[i] = cart[i + 1];
+            }
+            cartCount--;
+        }
+
+        static void UpdateQuantity(CartItem[] cart, int cartCount)
+        {
+            if (cartCount == 0)
+            {
+                Console.WriteLine("INFO: Cart is empty. No items to update.");
+                return;
+            }
+
+            DisplayCart(cart, cartCount);
+
+            Console.Write($"Enter item number to update (1 to {cartCount}): ");
+            string input = Console.ReadLine();
+
+            if (!int.TryParse(input, out int itemIndex))
+            {
+                Console.WriteLine("ERROR: Invalid number.");
+                return;
+            }
+
+            itemIndex--;
+
+            if (itemIndex < 0 || itemIndex >= cartCount)
+            {
+                Console.WriteLine("ERROR: Invalid item.");
+                return;
+            }
+
+            Console.Write("Enter new quantity: ");
+            if (!int.TryParse(Console.ReadLine(), out int newQuantity))
+            {
+                Console.WriteLine("ERROR: Invalid quantity.");
+                return; 
+            }
+
+            if (newQuantity <= 0)
+            {
+                Console.WriteLine("ERROR: Quantity must be greater than zero.");
+                return;
+            }
+
+            cart[itemIndex].Quantity = newQuantity;
+            cart[itemIndex].SubTotal = cart[itemIndex].Product.GetItemTotal(newQuantity);
+            Console.WriteLine("INFO: Quantity updated.");
         }
     }
 }
