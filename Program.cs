@@ -65,46 +65,30 @@
                 Console.WriteLine("================================================");
                 Console.WriteLine($"Available cart slots: {cart.Length - cartCount}");
 
-                if (cartCount == cart.Length)
+                if (cartCount < cart.Length)
                 {
-                    Console.WriteLine("INFO: Cart is full.");
+                    int product_index = ValidateProductNumber(products);
+                    int quantity = ValidateQuantity();
 
-                    int fullChoice = CartMenu();
+                    Product selectedproduct = products[product_index];
 
-                    if (fullChoice == 6)
+                    if (selectedproduct.RemainingStock == 0)
                     {
-                        DisplayReceipt(cart, cartCount, products);
-                        return;
+                        Console.WriteLine("INFO: Out of Stock.");
+                        continue;
                     }
 
-                    if (fullChoice == 1)
+                    if (!selectedproduct.HasEnoughStock(quantity))
                     {
-                        DisplayCart(cart, cartCount);
+                        Console.WriteLine("ERROR: Not enough stock.");
+                        continue;
                     }
 
-                    continue;
-                }
+                    Console.WriteLine($"\nYou selected: {selectedproduct.Name} x {quantity}");
+                    AddorUpdateCart(cart, ref cartCount, selectedproduct, quantity);
+                    selectedproduct.DeductStock(quantity);
+                } else Console.WriteLine("INFO: Cart is full.");
 
-                int product_index = ValidateProductNumber(products);
-                int quantity = ValidateQuantity();
-
-                Product selectedproduct = products[product_index];
-
-                if (selectedproduct.RemainingStock == 0)
-                {
-                    Console.WriteLine("INFO: Out of Stock.");
-                    continue;
-                }
-
-                if (!selectedproduct.HasEnoughStock(quantity))
-                {
-                    Console.WriteLine("ERROR: Not enough stock.");
-                    continue;
-                }
-
-                Console.WriteLine($"\nYou selected: {selectedproduct.Name} x {quantity}");
-                Add_or_UpdateCart(cart, ref cartCount, selectedproduct, quantity);
-                selectedproduct.DeductStock(quantity);
                 DisplayCart(cart, cartCount);
 
                 bool checkoutNow = false;
@@ -130,7 +114,7 @@
                         string confirm = PromptValidator("Are you sure you want to clear the cart? (Y/N): ");
                         if (confirm == "Y")
                         {
-                            ClearCart(ref cartCount);
+                            ClearCart(cart, ref cartCount);
                         }
                     }
                     else if (cartMenuChoice == 5)
@@ -155,10 +139,7 @@
                     DisplayReceipt(cart, cartCount, products);
                     break;
                 }
-
             }
-
-
         }
 
         static int ValidateProductNumber(Product[] products)
@@ -207,7 +188,7 @@
             }
         }
 
-        static void Add_or_UpdateCart(CartItem[] cart, ref int cartCount, Product product, int quantity)
+        static void AddorUpdateCart(CartItem[] cart, ref int cartCount, Product product, int quantity)
         {
             for (int i = 0; i < cartCount; i++)
             {
@@ -363,8 +344,14 @@
             }
         }
 
-        static void ClearCart(ref int cartCount)
+        static void ClearCart(CartItem[] cart, ref int cartCount)
         {
+            for (int i = 0; i < cartCount; i++)
+            {
+                cart[i].Product.RemainingStock += cart[i].Quantity;
+                cart[i] = null;
+            }
+
             cartCount = 0;
             Console.WriteLine("INFO: Cart has been cleared.");
         }
@@ -395,12 +382,15 @@
                 Console.WriteLine("ERROR: Item does not exist.");
                 return;
             }
-            Console.WriteLine($"INFO: Removed {cart[removeIndex].Product.Name}");
+
+            cart[removeIndex].Product.RemainingStock += cart[removeIndex].Quantity;
+            Console.WriteLine($"INFO: Removed {cart[removeIndex].Product.Name} x {cart[removeIndex].Quantity}");
 
             for (int i = removeIndex; i < cartCount - 1; i++)
             {
                 cart[i] = cart[i + 1];
             }
+            cart[cartCount - 1] = null;
             cartCount--;
         }
 
@@ -442,6 +432,23 @@
             {
                 Console.WriteLine("ERROR: Quantity must be greater than zero.");
                 return;
+            }
+
+            int oldQuantity = cart[itemIndex].Quantity;
+            int difference = newQuantity - oldQuantity;
+
+            if (difference > 0)
+            {
+                if (!cart[itemIndex].Product.HasEnoughStock(difference))
+                {
+                    Console.WriteLine("ERROR: Not enough stock to increase quantity.");
+                    return;
+                }
+                cart[itemIndex].Product.DeductStock(difference);
+            }
+            else if (difference < 0)
+            {
+                cart[itemIndex].Product.RemainingStock += (-difference);
             }
 
             cart[itemIndex].Quantity = newQuantity;
