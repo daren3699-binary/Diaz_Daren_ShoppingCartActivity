@@ -2,6 +2,9 @@
 {
     class Program
     {
+        static int receiptCounter = 1; //global counter for receipt
+        static string[] orderHistory = new string[50]; //transactions history array
+        static int historyCount = 0; //counter for order history
         static void Main(string[] args)
         {
             //initial product array
@@ -87,7 +90,8 @@
                     Console.WriteLine($"\nYou selected: {selectedproduct.Name} x {quantity}");
                     AddorUpdateCart(cart, ref cartCount, selectedproduct, quantity);
                     selectedproduct.DeductStock(quantity);
-                } else Console.WriteLine("INFO: Cart is full.");
+                }
+                else Console.WriteLine("INFO: Cart is full.");
 
                 DisplayCart(cart, cartCount);
 
@@ -257,8 +261,12 @@
                 return;
             }
 
-            double grandTotal = 0;
+            Console.WriteLine($"Receipt No: {receiptCounter:D4}");
+            Console.WriteLine($"Date: {DateTime.Now:MMMM dd, yyyy hh:mm tt}");
+            Console.WriteLine("================================================");
 
+            double grandTotal = 0;
+            Console.WriteLine("PURCHASED ITEMS:");
             for (int i = 0; i < cartCount; i++)
             {
                 CartItem item = cart[i];
@@ -282,18 +290,53 @@
             }
 
             double finalTotal = grandTotal - discount;
-            Console.WriteLine($"PHP {grandTotal:F2} - PHP {discount:F2} = Final Total : PHP {finalTotal:F2}");
 
-            Console.WriteLine("\n================================================");
+            orderHistory[historyCount] = $"Receipt No: {receiptCounter:D4} - Final Total : PHP {finalTotal:F2} Date:{DateTime.Now:MMMM dd, yyyy hh:mm tt}";
+            historyCount++;
+
+            Console.WriteLine($"Final Total after discount (PHP {grandTotal:F2} - PHP {discount:F2}): PHP {finalTotal:F2}");
+            double payment = GetValidPayment(finalTotal);
+            double change = payment - finalTotal;
+            Console.WriteLine($"\nFinal Total : PHP {finalTotal:F2}");
+            Console.WriteLine($"Payment : PHP {payment:F2}");
+            Console.WriteLine($"Change (PHP {payment:F2} - PHP {finalTotal:F2}) : PHP {change:F2}");
+
+            Console.WriteLine("\n=====================================================");
             Console.WriteLine("            REMAINING STOCK (UPDATED)");
-            Console.WriteLine("================================================");
+            Console.WriteLine("=====================================================");
             foreach (Product product in products)
             {
                 Console.WriteLine($"Product : {product.Name,-20} | Remaining Stock : {product.RemainingStock,-3}");
             }
-            Console.WriteLine("================================================");
-            Console.WriteLine("Thank you for shopping!");
+            Console.WriteLine("=====================================================");
 
+            Console.WriteLine("\n=====================================================");
+            Console.WriteLine("                  LOW STOCK ALERT");
+            Console.WriteLine("=====================================================");
+
+            bool hasLowStock = false;
+
+            foreach (Product product in products)
+            {
+                if (product.RemainingStock <= 5)
+                {
+                    Console.WriteLine($"ALERT: {product.Name} has only {product.RemainingStock} stock(s) left.");
+                    hasLowStock = true;
+                }
+            }
+            if (!hasLowStock)
+            {
+                Console.WriteLine("INFO: No low stock products.");
+            }
+
+            string viewHistory = PromptValidator("\nDo you want to view order history? (Y/N): ");
+            if (viewHistory == "Y")
+            {
+                DisplayOrderHistory();
+            }
+
+            Console.WriteLine("Thank you for shopping!");
+            receiptCounter++;
         }
         //Part 2 Codes / Methods
         static string PromptValidator(string message) //a method for Y/N input validation
@@ -425,7 +468,7 @@
             if (!int.TryParse(Console.ReadLine(), out int newQuantity))
             {
                 Console.WriteLine("ERROR: Invalid quantity.");
-                return; 
+                return;
             }
 
             if (newQuantity <= 0)
@@ -454,6 +497,45 @@
             cart[itemIndex].Quantity = newQuantity;
             cart[itemIndex].SubTotal = cart[itemIndex].Product.GetItemTotal(newQuantity);
             Console.WriteLine("INFO: Quantity updated.");
+        }
+
+        static double GetValidPayment(double finalTotal)
+        {
+            while (true)
+            {
+                Console.Write($"Enter payment amount: PHP ");
+                string input = Console.ReadLine();
+
+                if (!double.TryParse(input, out double payment))
+                {
+                    Console.WriteLine("ERROR: Invalid payment. Numbers only.");
+                    continue;
+                }
+
+                if (payment < finalTotal)
+                {
+                    Console.WriteLine("ERROR: Insufficient payment.");
+                    continue;
+                }
+                return payment;
+            }
+        }
+
+        static void DisplayOrderHistory()
+        {
+            Console.WriteLine("\n================================================");
+            Console.WriteLine("                 ORDER HISTORY");
+            Console.WriteLine("================================================");
+
+            if (historyCount == 0)
+            {
+                Console.WriteLine("INFO: No transactions yet.");
+                return;
+            }
+            for (int i = 0; i < historyCount; i++)
+            {
+                Console.WriteLine(orderHistory[i]);
+            }
         }
     }
 }
