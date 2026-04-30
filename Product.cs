@@ -10,6 +10,7 @@ namespace v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY
         public string Name;
         public double Price;
         public int RemainingStock;
+        public string Category;
 
         public void DisplayProduct()
         {

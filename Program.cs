@@ -13,44 +13,50 @@
                 new Product {Id = 1,
                              Name = "Pencil",
                              Price = 6.00,
-                             RemainingStock = 30,},
+                             RemainingStock = 30,
+                             Category = "Supplies"}, //i added category for all products
 
                 new Product {Id = 2,
                              Name = "Pad Paper",
                              Price = 20.00,
-                             RemainingStock = 25,},
+                             RemainingStock = 25,
+                             Category = "Supplies"},
 
                 new Product {Id = 3,
                              Name = "Black Ballpen",
                              Price = 9.00,
-                             RemainingStock = 28,},
+                             RemainingStock = 28,
+                             Category = "Supplies"},
 
                 new Product {Id = 4,
                              Name = "Correction Tape",
                              Price = 28.00,
-                             RemainingStock = 18,},
+                             RemainingStock = 18,
+                             Category = "Supplies"},
 
                 new Product {Id = 5,
                              Name = "Whiteboard Marker",
                              Price = 12.00,
-                             RemainingStock = 21,},
+                             RemainingStock = 21,
+                             Category = "Supplies"},
 
                 new Product {Id = 6,
                              Name = "Bag",
                              Price = 250.00,
-                             RemainingStock = 15,},
-
+                             RemainingStock = 15,
+                             Category = "Accessories"},
 
                 new Product {Id = 7,
                              Name = "White Board",
                              Price = 300.00,
-                             RemainingStock = 25,},
-
+                             RemainingStock = 25,
+                             Category = "Equipment"},
 
                 new Product {Id = 8,
                              Name = "Aquaflask Tumbler",
                              Price = 500.00,
-                             RemainingStock = 30,},
+                             RemainingStock = 30,
+                             Category = "Accessories"},
             };
 
             CartItem[] cart = new CartItem[5];
@@ -58,90 +64,82 @@
 
             while (true)
             {
-                Console.WriteLine("\n================================================");
-                Console.WriteLine("                 STORE MENU");
-                Console.WriteLine("================================================");
-                foreach (Product product in products)
+                int choice = ShoppingMenu(products, cart, cartCount);
+
+                if (choice == 1)
                 {
-                    product.DisplayProduct();
+                    SearchProducts(products);
                 }
-                Console.WriteLine("================================================");
-                Console.WriteLine($"Available cart slots: {cart.Length - cartCount}");
-
-                if (cartCount < cart.Length)
+                else if (choice == 2)
                 {
-                    int product_index = ValidateProductNumber(products);
-                    int quantity = ValidateQuantity();
-
-                    Product selectedproduct = products[product_index];
-
-                    if (selectedproduct.RemainingStock == 0)
-                    {
-                        Console.WriteLine("INFO: Out of Stock.");
-                        continue;
-                    }
-
-                    if (!selectedproduct.HasEnoughStock(quantity))
-                    {
-                        Console.WriteLine("ERROR: Not enough stock.");
-                        continue;
-                    }
-
-                    Console.WriteLine($"\nYou selected: {selectedproduct.Name} x {quantity}");
-                    AddorUpdateCart(cart, ref cartCount, selectedproduct, quantity);
-                    selectedproduct.DeductStock(quantity);
+                    FilterByCategory(products);
                 }
-                else Console.WriteLine("INFO: Cart is full.");
-
-                DisplayCart(cart, cartCount);
-
-                bool checkoutNow = false;
-
-                while (true)
+                else if (choice == 3)
                 {
-                    int cartMenuChoice = CartMenu();
-
-                    if (cartMenuChoice == 1)
+                    if (cartCount == cart.Length)
                     {
-                        DisplayCart(cart, cartCount);
+                        Console.WriteLine("INFO: Cart is full.");
                     }
-                    else if (cartMenuChoice == 2)
+                    else
+                    {
+                        int productIndex = ValidateProductNumber(products);
+                        int quantity = ValidateQuantity();
+
+                        Product selectedProduct = products[productIndex];
+
+                        if (selectedProduct.RemainingStock == 0)
+                        {
+                            Console.WriteLine("INFO: Out of Stock");
+                            continue;
+                        }
+
+                        if (!selectedProduct.HasEnoughStock(quantity))
+                        {
+                            Console.WriteLine("ERROR: Not enough stock.");
+                            continue;
+                        }
+
+                        Console.WriteLine($"\nYou selected: {selectedProduct.Name} x {quantity}");
+                        AddOrUpdateCart(cart, ref cartCount, selectedProduct, quantity);
+                        selectedProduct.DeductStock(quantity);
+                    }
+                }
+                else if (choice == 4)
+                {
+                    DisplayCart(cart, cartCount);
+                }
+                else if (choice == 5)
+                {
+                    string optionToUpdate = PromptValidator("Are you sure you want to update item quantity? (Y/N): ");
+                    if (optionToUpdate == "Y")
                     {
                         UpdateQuantity(cart, cartCount);
                     }
-                    else if (cartMenuChoice == 3)
+                }
+                else if (choice == 6)
+                {
+                    string optionToRemove = PromptValidator("Are you sure you want to remove an item from the cart? (Y/N): ");
+                    if (optionToRemove == "Y")
                     {
                         RemoveItem(cart, ref cartCount);
                     }
-                    else if (cartMenuChoice == 4)
+                }
+                else if (choice == 7)
+                {
+                    string optionToClear = PromptValidator("Are you sure you want to clear the cart? (Y/N): ");
+                    if (optionToClear == "Y")
                     {
-                        string confirm = PromptValidator("Are you sure you want to clear the cart? (Y/N): ");
-                        if (confirm == "Y")
-                        {
-                            ClearCart(cart, ref cartCount);
-                        }
+                        ClearCart(cart, ref cartCount);
                     }
-                    else if (cartMenuChoice == 5)
+                }
+                else if (choice == 8)
+                {
+                    string optionToCheckout = PromptValidator("Are you sure you want to checkout? (Y/N): ");
+                    if (optionToCheckout == "Y")
                     {
+                        DisplayReceipt(cart, cartCount, products);
                         break;
                     }
-                    else if (cartMenuChoice == 6)
-                    {
-                        string choice = PromptValidator("Are you sure you want to checkout? (Y/N): ");
-
-                        if (choice == "Y")
-                        {
-                            checkoutNow = true;
-                            break;
-                        }
-                    }
-
-                }
-
-                if (checkoutNow)
-                {
-                    DisplayReceipt(cart, cartCount, products);
-                    break;
                 }
             }
         }
@@ -192,7 +190,7 @@
             }
         }
 
-        static void AddorUpdateCart(CartItem[] cart, ref int cartCount, Product product, int quantity)
+        static void AddOrUpdateCart(CartItem[] cart, ref int cartCount, Product product, int quantity)
         {
             for (int i = 0; i < cartCount; i++)
             {
@@ -291,7 +289,7 @@
 
             double finalTotal = grandTotal - discount;
 
-            orderHistory[historyCount] = $"Receipt No: {receiptCounter:D4} - Final Total : PHP {finalTotal:F2} Date:{DateTime.Now:MMMM dd, yyyy hh:mm tt}";
+            orderHistory[historyCount] = $"Receipt No: {receiptCounter:D4} - Final Total : PHP {finalTotal:F2} Date: {DateTime.Now:MMMM dd, yyyy hh:mm tt}";
             historyCount++;
 
             Console.WriteLine($"Final Total after discount (PHP {grandTotal:F2} - PHP {discount:F2}): PHP {finalTotal:F2}");
@@ -361,29 +359,38 @@
             }
         }
 
-        static int CartMenu()
+        static int ShoppingMenu(Product[] products, CartItem[] cart, int cartCount)
         {
+            Console.WriteLine("\n================================================");
+            Console.WriteLine("                 STORE MENU");
+            Console.WriteLine("================================================");
+            foreach (Product product in products)
+            {
+                product.DisplayProduct();
+            }
+            Console.WriteLine("================================================");
+            Console.WriteLine($"Available cart slots: {cart.Length - cartCount}");
+            Console.WriteLine("================================================");
+            Console.WriteLine("1. Search Product");
+            Console.WriteLine("2. Filter by Category");
+            Console.WriteLine("3. Add Item to Cart");
+            Console.WriteLine("4. View Cart");
+            Console.WriteLine("5. Update Item Quantity");
+            Console.WriteLine("6. Remove Item");
+            Console.WriteLine("7. Clear Cart");
+            Console.WriteLine("8. Checkout");
+            Console.WriteLine("================================================");
+
             while (true)
             {
-                Console.WriteLine("\n============== CART MENU ==============");
-                Console.WriteLine("1. View Cart");
-                Console.WriteLine("2. Update Item Quantity");
-                Console.WriteLine("3. Remove Item");
-                Console.WriteLine("4. Clear Cart");
-                Console.WriteLine("5. Continue Shopping");
-                Console.WriteLine("6. Checkout");
-                Console.Write("Enter choice (1-6): ");
-
+                Console.Write("Enter choice (1-8): ");
                 string input = Console.ReadLine();
 
-                if (int.TryParse(input, out int choice))
+                if (int.TryParse(input, out int choice) && choice >= 1 && choice <= 8)
                 {
-                    if (choice >= 1 && choice <= 6)
-                    {
-                        return choice;
-                    }
+                    return choice;
                 }
-                Console.WriteLine("ERROR: Invalid choice. Please enter a number between 1 and 6.");
+                Console.WriteLine("ERROR: Invalid choice. Please enter a number between 1 and 8.");
             }
         }
 
@@ -503,7 +510,7 @@
         {
             while (true)
             {
-                Console.Write($"Enter payment amount: PHP ");
+                Console.Write($"\nEnter payment amount: PHP ");
                 string input = Console.ReadLine();
 
                 if (!double.TryParse(input, out double payment))
@@ -537,5 +544,70 @@
                 Console.WriteLine(orderHistory[i]);
             }
         }
+
+        static void SearchProducts(Product[] products)
+        {
+            Console.Write("\nEnter product name to search: ");
+            string keyword = Console.ReadLine().Trim().ToLower();
+
+            Console.WriteLine("\n================================================");
+            Console.WriteLine("                   SEARCH RESULTS");
+            Console.WriteLine("================================================");
+
+            bool found = false;
+            foreach (Product product in products)
+            {
+                if (product.Name.ToLower().Contains(keyword))
+                {
+                    product.DisplayProduct();
+                    found = true;
+                }
+            }
+            if (!found)
+            {
+                Console.WriteLine("INFO: No matching products found.");
+            }
+        }
+
+        static void FilterByCategory(Product[] products)
+        {
+            Console.WriteLine("\n================================================");
+            Console.WriteLine("              CATEGORIES");
+            Console.WriteLine("================================================");
+            Console.WriteLine("1. Supplies");
+            Console.WriteLine("2. Accessories");
+            Console.WriteLine("3. Equipment");
+
+            Console.Write("Enter category number (1-3): ");
+            string input = Console.ReadLine().Trim();
+            string selectedCategory;
+
+            if (input == "1") selectedCategory = "Supplies";
+            else if (input == "2") selectedCategory = "Accessories";
+            else if (input == "3") selectedCategory = "Equipment";
+            else
+            {
+                Console.WriteLine("ERROR: Invalid category.");
+                return;
+            }
+            Console.WriteLine($"\n========== {selectedCategory.ToUpper()} PRODUCTS ==========");
+
+            bool found = false;
+            foreach (Product product in products)
+            {
+                if (product.Category == selectedCategory)
+                {
+                    product.DisplayProduct();
+                    found = true;
+                }
+            }
+            if (!found)
+            {
+                Console.WriteLine("INFO: No products found in this category.");
+            }
+        }
+
+
     }
 }
+
