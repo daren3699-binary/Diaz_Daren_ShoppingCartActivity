@@ -6,9 +6,28 @@ namespace v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY
 {
     class CartItem
     {
-        public Product Product;
-        public int Quantity;
-        public double SubTotal;
-        
+        private Product product;
+        private int quantity;
+        private double subTotal;
+
+        public Product Product
+        {
+            get { return product; }
+            set { product = value; }
+        }
+        public int Quantity
+        {
+            get { return quantity; }
+            set { quantity = value; }
+        }
+
+        public double SubTotal
+        {
+            get { return subTotal; }
+            set { subTotal = value; }
+        }
+       
+
+      
     }
 }

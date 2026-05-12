@@ -31,7 +31,7 @@
                 new Product {Id = 4,
                              Name = "Correction Tape",
                              Price = 28.00,
-                             RemainingStock = 18,
+                             RemainingStock  = 18,
                              Category = "Supplies"},
 
                 new Product {Id = 5,
