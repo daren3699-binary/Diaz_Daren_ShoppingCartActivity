@@ -1,0 +1,15 @@
+C:\Users\Mavrick\source\repos\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY\projectPart2\bin\Debug\net10.0\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY.exe
+C:\Users\Mavrick\source\repos\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY\projectPart2\bin\Debug\net10.0\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY.deps.json
+C:\Users\Mavrick\source\repos\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY\projectPart2\bin\Debug\net10.0\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY.runtimeconfig.json
+C:\Users\Mavrick\source\repos\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY\projectPart2\bin\Debug\net10.0\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY.dll
+C:\Users\Mavrick\source\repos\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY\projectPart2\bin\Debug\net10.0\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY.pdb
+C:\Users\Mavrick\source\repos\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY\projectPart2\obj\Debug\net10.0\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Mavrick\source\repos\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY\projectPart2\obj\Debug\net10.0\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY.AssemblyInfoInputs.cache
+C:\Users\Mavrick\source\repos\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY\projectPart2\obj\Debug\net10.0\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY.AssemblyInfo.cs
+C:\Users\Mavrick\source\repos\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY\projectPart2\obj\Debug\net10.0\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY.csproj.CoreCompileInputs.cache
+C:\Users\Mavrick\source\repos\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY\projectPart2\obj\Debug\net10.0\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY.sourcelink.json
+C:\Users\Mavrick\source\repos\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY\projectPart2\obj\Debug\net10.0\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY.dll
+C:\Users\Mavrick\source\repos\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY\projectPart2\obj\Debug\net10.0\refint\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY.dll
+C:\Users\Mavrick\source\repos\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY\projectPart2\obj\Debug\net10.0\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY.pdb
+C:\Users\Mavrick\source\repos\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY\projectPart2\obj\Debug\net10.0\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY.genruntimeconfig.cache
+C:\Users\Mavrick\source\repos\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY\projectPart2\obj\Debug\net10.0\ref\v1_DIAZ_DAREN_V_SHOPPINGCARTACTIVTY.dll
